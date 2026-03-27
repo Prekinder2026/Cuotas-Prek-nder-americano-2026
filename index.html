@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cuotas Pre-Kinder Â· Consulta</title>
+  <title>Cuotas Pre-Kinder · Consulta</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -38,6 +39,7 @@
       color: var(--text);
     }
 
+    /* ─── HEADER STRIP ─── */
     .top-strip {
       width: 100%;
       max-width: 480px;
@@ -62,6 +64,7 @@
       text-transform: uppercase;
     }
 
+    /* ─── LOGIN CARD ─── */
     #loginScreen {
       background: var(--white);
       border-radius: var(--radius);
@@ -162,6 +165,7 @@
     .btn:active { transform: scale(0.99); }
     .btn:disabled { opacity: 0.55; cursor: wait; }
 
+    /* ─── DASHBOARD ─── */
     #dashboardScreen {
       width: 100%;
       max-width: 520px;
@@ -321,9 +325,10 @@
 
   <div class="top-strip">
     <div class="school-dot"></div>
-    <span class="school-label">Pre-Kinder Â· Portal de Apoderados</span>
+    <span class="school-label">Pre-Kinder · Portal de Apoderados</span>
   </div>
 
+  <!-- ── LOGIN ── -->
   <div id="loginScreen">
     <div class="icon-wrap">
       <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
@@ -339,6 +344,7 @@
     <button class="btn" id="loginBtn" onclick="doLogin()">Consultar cuotas</button>
   </div>
 
+  <!-- ── DASHBOARD ── -->
   <div id="dashboardScreen">
     <div class="dash-header">
       <div class="avatar" id="avatarEl"></div>
@@ -370,15 +376,56 @@
     </div>
 
     <p class="footer-note">
-      Â¿Tienes alguna consulta? Contacta a la administraciÃ³n del colegio.<br>
-      Ãltima actualizaciÃ³n al momento de consultar.
+      ¿Tienes alguna consulta? Contacta a la administración del colegio.<br>
+      Última actualización al momento de consultar.
     </p>
   </div>
 
   <script>
-    const APPSSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSlMoq-QuhgPXa69o1rSQMOauoc2bG0-sJiS0a74V0PW-nG1hct1psRYUfU5cnyJOL/exec';
+    // ╔══════════════════════════════════════════════════╗
+    // ║  CONFIGURACIÓN — Solo modifica esta sección      ║
+    // ╠══════════════════════════════════════════════════╣
+    // ║  1. Pega la URL de tu Google Apps Script abajo   ║
+    // ║  2. Cambia DEMO_MODE a false                     ║
+    // ╚══════════════════════════════════════════════════╝
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSlMoq-QuhgPXa69o1rSQMOauoc2bG0-sJiS0a74V0PW-nG1hct1psRYUfU5cnyJOL/exec';
     const DEMO_MODE = false;
-    const DEMO = {};
+
+    // ── DATOS DE PRUEBA (eliminar cuando uses Apps Script) ──
+    // Clave = primer apellido + día de nacimiento  (ej: GARCIA12)
+    const DEMO = {
+      'GARCIA12': {
+        familia: 'Familia García',
+        alumno: 'Sofía García · Pre-Kinder A',
+        cuotas: [
+          { nombre: 'Cuota Marzo', estado: 'Pagado' },
+          { nombre: 'Cuota Abril', estado: 'Pagado' },
+          { nombre: 'Cuota Mayo', estado: 'Pendiente' },
+          { nombre: 'Cuota Junio', estado: 'Pendiente' },
+        ]
+      },
+      'PEREZ05': {
+        familia: 'Familia Pérez',
+        alumno: 'Mateo Pérez · Pre-Kinder B',
+        cuotas: [
+          { nombre: 'Cuota Marzo', estado: 'Vencida' },
+          { nombre: 'Cuota Abril', estado: 'Vencida' },
+          { nombre: 'Cuota Mayo', estado: 'Pendiente' },
+          { nombre: 'Cuota Junio', estado: 'Pendiente' },
+        ]
+      },
+      'LOPEZ28': {
+        familia: 'Familia López',
+        alumno: 'Valentina López · Pre-Kinder A',
+        cuotas: [
+          { nombre: 'Cuota Marzo', estado: 'Pagado' },
+          { nombre: 'Cuota Abril', estado: 'Pagado' },
+          { nombre: 'Cuota Mayo', estado: 'Pagado' },
+          { nombre: 'Cuota Junio', estado: 'Pagado' },
+        ]
+      }
+    };
+    // ───────────────────────────────────────────────────
 
     const pwdInput = document.getElementById('pwdInput');
     pwdInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
@@ -386,25 +433,37 @@
     async function doLogin() {
       const pwd = pwdInput.value.trim().toUpperCase();
       if (!pwd) return;
+
       const btn = document.getElementById('loginBtn');
       const errBox = document.getElementById('errorBox');
       btn.disabled = true;
       btn.textContent = 'Verificando...';
       errBox.style.display = 'none';
+
       try {
-        const res = await fetch(`${APPS_SCRIPT_URL}?password=${encodeURIComponent(pwd)}`);
-        const json = await res.json();
-        if (json.error) {
+        let data;
+
+        if (DEMO_MODE) {
+          await new Promise(r => setTimeout(r, 700));
+          data = DEMO[pwd] || null;
+        } else {
+          const res = await fetch(`${APPS_SCRIPT_URL}?password=${encodeURIComponent(pwd)}`);
+          const json = await res.json();
+          data = json.error ? null : json;
+        }
+
+        if (data) {
+          renderDashboard(data);
+        } else {
           errBox.style.display = 'block';
           pwdInput.value = '';
           pwdInput.focus();
-        } else {
-          renderDashboard(json);
         }
       } catch {
-        errBox.textContent = 'Error de conexiÃ³n. Intenta mÃ¡s tarde.';
+        errBox.textContent = 'Error de conexión. Intenta más tarde.';
         errBox.style.display = 'block';
       }
+
       btn.disabled = false;
       btn.textContent = 'Consultar cuotas';
     }
@@ -412,20 +471,29 @@
     function renderDashboard(data) {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('dashboardScreen').style.display = 'block';
-      const initials = data.familia.split(' ').slice(-1)[0].substring(0,2).toUpperCase();
+
+      const initials = data.familia.split(' ').slice(-1)[0].substring(0, 2).toUpperCase();
       document.getElementById('avatarEl').textContent = initials;
       document.getElementById('familyNameEl').textContent = data.familia;
       document.getElementById('alumnoEl').textContent = data.alumno;
+
       const cuotas = data.cuotas;
       const paid = cuotas.filter(c => c.estado.toLowerCase() === 'pagado').length;
-      const pend = cuotas.filter(c => ['pendiente','vencida'].includes(c.estado.toLowerCase())).length;
+      const pend = cuotas.filter(c => ['pendiente', 'vencida'].includes(c.estado.toLowerCase())).length;
+
       document.getElementById('totalEl').textContent = cuotas.length;
       document.getElementById('paidEl').textContent = paid;
       document.getElementById('pendEl').textContent = pend;
+
       const list = document.getElementById('cuotasListEl');
       list.innerHTML = cuotas.map(c => {
         const cls = c.estado.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        return `<div class="cuota-row"><div class="cuota-dot ${cls}"></div><span class="cuota-name">${c.nombre}</span><span class="badge ${cls}">${c.estado}</span></div>`;
+        return `
+          <div class="cuota-row">
+            <div class="cuota-dot ${cls}"></div>
+            <span class="cuota-name">${c.nombre}</span>
+            <span class="badge ${cls}">${c.estado}</span>
+          </div>`;
       }).join('');
     }
 
