@@ -339,7 +339,12 @@
     <div class="error-box" id="errorBox">Clave incorrecta. Por favor intenta nuevamente.</div>
 
     <label class="field-label" for="pwdInput">Clave familiar</label>
-    <input class="field-input" type="password" id="pwdInput" placeholder="Ingresa tu clave" autocomplete="off" />
+    <div style="position:relative; margin-bottom:1rem;">
+      <input class="field-input" type="password" id="pwdInput" placeholder="Ingresa tu clave" autocomplete="off" style="margin-bottom:0; padding-right:48px;" />
+      <button onclick="togglePwd()" type="button" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#5F5E5A;" id="eyeBtn">
+        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
 
     <button class="btn" id="loginBtn" onclick="doLogin()">Consultar cuotas</button>
   </div>
@@ -429,6 +434,18 @@
 
     const pwdInput = document.getElementById('pwdInput');
     pwdInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    function togglePwd() {
+      const input = document.getElementById('pwdInput');
+      const icon = document.getElementById('eyeIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+      } else {
+        input.type = 'password';
+        icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+      }
+    }
 
     async function doLogin() {
       const pwd = pwdInput.value.trim().toUpperCase();
