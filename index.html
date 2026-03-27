@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuotas Pre-Kinder · Consulta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: #1D9E75;
+      --teal-light: #E1F5EE;
+      --teal-dark: #0F6E56;
+      --amber: #BA7517;
+      --amber-light: #FAEEDA;
+      --red: #993556;
+      --red-light: #FBEAF0;
+      --gray-light: #F1EFE8;
+      --text: #2C2C2A;
+      --text-muted: #5F5E5A;
+      --bg: #f5f3ee;
+      --white: #FFFFFF;
+      --border: rgba(0,0,0,0.09);
+      --radius: 14px;
+      --radius-sm: 9px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      color: var(--text);
+    }
+
+    /* ─── HEADER STRIP ─── */
+    .top-strip {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+
+    .school-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+
+    .school-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ─── LOGIN CARD ─── */
+    #loginScreen {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 0.5px solid var(--border);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .icon-wrap {
+      width: 60px;
+      height: 60px;
+      background: var(--teal-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .icon-wrap svg {
+      width: 28px;
+      height: 28px;
+      fill: var(--teal);
+    }
+
+    .login-title {
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .field-input:focus { border-color: var(--teal); background: var(--white); }
+
+    .error-box {
+      background: var(--red-light);
+      color: var(--red);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn:hover { background: var(--teal-dark); }
+    .btn:active { transform: scale(0.99); }
+    .btn:disabled { opacity: 0.55; cursor: wait; }
+
+    /* ─── DASHBOARD ─── */
+    #dashboardScreen {
+      width: 100%;
+      max-width: 520px;
+      display: none;
+    }
+
+    .dash-header {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 0.5px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      background: var(--teal-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--teal-dark);
+      flex-shrink: 0;
+    }
+
+    .family-info h2 { font-size: 17px; font-weight: 800; }
+    .family-info p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+    .logout-btn {
+      margin-left: auto;
+      flex-shrink: 0;
+      background: none;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px 13px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      border: 0.5px solid var(--border);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .stat-card.s-total .stat-num { color: var(--text); }
+    .stat-card.s-paid .stat-num { color: var(--teal); }
+    .stat-card.s-pend .stat-num { color: var(--amber); }
+
+    .cuotas-panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 0.5px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .panel-head {
+      padding: 14px 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .cuota-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 0.5px solid var(--border);
+      gap: 12px;
+    }
+
+    .cuota-row:last-child { border-bottom: none; }
+
+    .cuota-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cuota-name {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .badge.pagado { background: var(--teal-light); color: var(--teal-dark); }
+    .cuota-dot.pagado { background: var(--teal); }
+
+    .badge.pendiente { background: var(--amber-light); color: var(--amber); }
+    .cuota-dot.pendiente { background: var(--amber); }
+
+    .badge.vencida { background: var(--red-light); color: var(--red); }
+    .cuota-dot.vencida { background: var(--red); }
+
+    .footer-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 400px) {
+      #loginScreen { padding: 2rem 1.25rem; }
+      .dash-header { padding: 1rem 1.25rem; }
+      .cuota-row { padding: 12px 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-strip">
+    <div class="school-dot"></div>
+    <span class="school-label">Pre-Kinder · Portal de Apoderados</span>
+  </div>
+
+  <!-- ── LOGIN ── -->
+  <div id="loginScreen">
+    <div class="icon-wrap">
+      <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+    </div>
+    <h1 class="login-title">Estado de cuotas</h1>
+    <p class="login-sub">Ingresa la clave de tu familia para revisar tus cuotas</p>
+
+    <div class="error-box" id="errorBox">Clave incorrecta. Por favor intenta nuevamente.</div>
+
+    <label class="field-label" for="pwdInput">Clave familiar</label>
+    <input class="field-input" type="password" id="pwdInput" placeholder="Ingresa tu clave" autocomplete="off" />
+
+    <button class="btn" id="loginBtn" onclick="doLogin()">Consultar cuotas</button>
+  </div>
+
+  <!-- ── DASHBOARD ── -->
+  <div id="dashboardScreen">
+    <div class="dash-header">
+      <div class="avatar" id="avatarEl"></div>
+      <div class="family-info">
+        <h2 id="familyNameEl"></h2>
+        <p id="alumnoEl"></p>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Salir</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card s-total">
+        <div class="stat-num" id="totalEl">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-card s-paid">
+        <div class="stat-num" id="paidEl">0</div>
+        <div class="stat-label">Pagadas</div>
+      </div>
+      <div class="stat-card s-pend">
+        <div class="stat-num" id="pendEl">0</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+    </div>
+
+    <div class="cuotas-panel">
+      <div class="panel-head">Detalle de cuotas</div>
+      <div id="cuotasListEl"></div>
+    </div>
+
+    <p class="footer-note">
+      ¿Tienes alguna consulta? Contacta a la administración del colegio.<br>
+      Última actualización al momento de consultar.
+    </p>
+  </div>
+
+  <script>
+    // ╔══════════════════════════════════════════════════╗
+    // ║  CONFIGURACIÓN — Solo modifica esta sección      ║
+    // ╠══════════════════════════════════════════════════╣
+    // ║  1. Pega la URL de tu Google Apps Script abajo   ║
+    // ║  2. Cambia DEMO_MODE a false                     ║
+    // ╚══════════════════════════════════════════════════╝
+    const APPS_SCRIPT_URL = 'PEGA_TU_URL_AQUÍ';
+    const DEMO_MODE = true;
+
+    // ── DATOS DE PRUEBA (eliminar cuando uses Apps Script) ──
+    // Clave = primer apellido + día de nacimiento  (ej: GARCIA12)
+    const DEMO = {
+      'GARCIA12': {
+        familia: 'Familia García',
+        alumno: 'Sofía García · Pre-Kinder A',
+        cuotas: [
+          { nombre: 'Cuota Marzo', estado: 'Pagado' },
+          { nombre: 'Cuota Abril', estado: 'Pagado' },
+          { nombre: 'Cuota Mayo', estado: 'Pendiente' },
+          { nombre: 'Cuota Junio', estado: 'Pendiente' },
+        ]
+      },
+      'PEREZ05': {
+        familia: 'Familia Pérez',
+        alumno: 'Mateo Pérez · Pre-Kinder B',
+        cuotas: [
+          { nombre: 'Cuota Marzo', estado: 'Vencida' },
+          { nombre: 'Cuota Abril', estado: 'Vencida' },
+          { nombre: 'Cuota Mayo', estado: 'Pendiente' },
+          { nombre: 'Cuota Junio', estado: 'Pendiente' },
+        ]
+      },
+      'LOPEZ28': {
+        familia: 'Familia López',
+        alumno: 'Valentina López · Pre-Kinder A',
+        cuotas: [
+          { nombre: 'Cuota Marzo', estado: 'Pagado' },
+          { nombre: 'Cuota Abril', estado: 'Pagado' },
+          { nombre: 'Cuota Mayo', estado: 'Pagado' },
+          { nombre: 'Cuota Junio', estado: 'Pagado' },
+        ]
+      }
+    };
+    // ───────────────────────────────────────────────────
+
+    const pwdInput = document.getElementById('pwdInput');
+    pwdInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    async function doLogin() {
+      const pwd = pwdInput.value.trim().toUpperCase();
+      if (!pwd) return;
+
+      const btn = document.getElementById('loginBtn');
+      const errBox = document.getElementById('errorBox');
+      btn.disabled = true;
+      btn.textContent = 'Verificando...';
+      errBox.style.display = 'none';
+
+      try {
+        let data;
+
+        if (DEMO_MODE) {
+          await new Promise(r => setTimeout(r, 700));
+          data = DEMO[pwd] || null;
+        } else {
+          const res = await fetch(`${APPS_SCRIPT_URL}?password=${encodeURIComponent(pwd)}`);
+          const json = await res.json();
+          data = json.error ? null : json;
+        }
+
+        if (data) {
+          renderDashboard(data);
+        } else {
+          errBox.style.display = 'block';
+          pwdInput.value = '';
+          pwdInput.focus();
+        }
+      } catch {
+        errBox.textContent = 'Error de conexión. Intenta más tarde.';
+        errBox.style.display = 'block';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Consultar cuotas';
+    }
+
+    function renderDashboard(data) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboardScreen').style.display = 'block';
+
+      const initials = data.familia.split(' ').slice(-1)[0].substring(0, 2).toUpperCase();
+      document.getElementById('avatarEl').textContent = initials;
+      document.getElementById('familyNameEl').textContent = data.familia;
+      document.getElementById('alumnoEl').textContent = data.alumno;
+
+      const cuotas = data.cuotas;
+      const paid = cuotas.filter(c => c.estado.toLowerCase() === 'pagado').length;
+      const pend = cuotas.filter(c => ['pendiente', 'vencida'].includes(c.estado.toLowerCase())).length;
+
+      document.getElementById('totalEl').textContent = cuotas.length;
+      document.getElementById('paidEl').textContent = paid;
+      document.getElementById('pendEl').textContent = pend;
+
+      const list = document.getElementById('cuotasListEl');
+      list.innerHTML = cuotas.map(c => {
+        const cls = c.estado.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return `
+          <div class="cuota-row">
+            <div class="cuota-dot ${cls}"></div>
+            <span class="cuota-name">${c.nombre}</span>
+            <span class="badge ${cls}">${c.estado}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function doLogout() {
+      document.getElementById('dashboardScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'block';
+      pwdInput.value = '';
+      document.getElementById('errorBox').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
